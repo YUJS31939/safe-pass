@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#0f172a">
+  <title>Safe Pass - 强密码生成器</title>
+  <link rel="preconnect" href="self">
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icons/icon-192.png" sizes="192x192">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+</head>
+<body>
+  <header class="app-header" role="banner">
+    <h1 class="app-title">Safe Pass</h1>
+    <div class="header-actions">
+      <button id="themeToggle" class="btn btn-ghost" aria-label="切换主题" title="切换主题">🌓</button>
+      <a class="btn btn-ghost" href="#about" aria-label="查看关于与帮助">帮助</a>
+    </div>
+  </header>
+
+  <main class="container" role="main">
+    <nav class="tabs" role="tablist" aria-label="生成模式">
+      <button id="tabPassword" role="tab" aria-selected="true" aria-controls="panelPassword" class="tab active">随机密码</button>
+      <button id="tabPassphrase" role="tab" aria-selected="false" aria-controls="panelPassphrase" class="tab">通行短语</button>
+    </nav>
+
+    <section id="panelPassword" role="tabpanel" aria-labelledby="tabPassword" class="panel active">
+      <div class="grid">
+        <div class="card">
+          <h2 class="card-title">参数</h2>
+          <div class="form-row">
+            <label for="length">长度</label>
+            <div class="row-inline">
+              <input type="range" id="length" min="8" max="64" value="16" aria-label="密码长度">
+              <input type="number" id="lengthNum" min="8" max="64" value="16" aria-label="密码长度数值">
+            </div>
+          </div>
+          <div class="form-row">
+            <label>字符集</label>
+            <div class="row-chips">
+              <label><input type="checkbox" id="optLower" checked> 小写 a–z</label>
+              <label><input type="checkbox" id="optUpper" checked> 大写 A–Z</label>
+              <label><input type="checkbox" id="optDigits" checked> 数字 0–9</label>
+              <label><input type="checkbox" id="optSymbols" checked> 符号 !@#…</label>
+            </div>
+          </div>
+          <div class="form-row">
+            <label><input type="checkbox" id="optSimilar"> 避免相似字符（O/0, l/1/I 等）</label>
+          </div>
+          <div class="form-row">
+            <label for="excludeChars">排除字符</label>
+            <input id="excludeChars" type="text" inputmode="latin" placeholder="例如: {}[]()'\&quot;`~|/\\">
+          </div>
+          <div class="form-row">
+            <label><input type="checkbox" id="optRequireEach" checked> 每类至少包含 1 个字符</label>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">结果</h2>
+          <div class="result-row">
+            <input id="resultField" type="password" class="result" readonly aria-label="生成的密码" value="" placeholder="点击生成">
+            <button id="toggleVisibility" class="btn btn-ghost" aria-label="显示或隐藏">👁️</button>
+            <button id="copyBtn" class="btn" aria-label="复制">复制</button>
+          </div>
+          <div class="actions">
+            <button id="generateBtn" class="btn btn-primary">生成</button>
+            <button id="regenBtn" class="btn">再来一个</button>
+          </div>
+          <div class="strength">
+            <div class="strength-bar" aria-hidden="true">
+              <div id="strengthFill" class="strength-fill"></div>
+            </div>
+            <div id="strengthText" class="strength-text" aria-live="polite">强度：–</div>
+          </div>
+          <div id="hintText" class="hint" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="panelPassphrase" role="tabpanel" aria-labelledby="tabPassphrase" class="panel" hidden>
+      <div class="grid">
+        <div class="card">
+          <h2 class="card-title">参数</h2>
+          <div class="form-row">
+            <label for="wordCount">词数</label>
+            <input type="number" id="wordCount" min="3" max="8" value="4">
+          </div>
+          <div class="form-row">
+            <label for="separator">分隔符</label>
+            <input type="text" id="separator" value="-" aria-label="分隔符">
+          </div>
+          <div class="form-row">
+            <label><input type="checkbox" id="ppRandomCase"> 随机大小写</label>
+          </div>
+          <div class="form-row">
+            <label><input type="checkbox" id="ppCapitalize"> 首字母大写</label>
+          </div>
+          <div class="form-row">
+            <label><input type="checkbox" id="ppAddNumber"> 插入数字</label>
+          </div>
+          <div class="form-row">
+            <label><input type="checkbox" id="ppAddSymbol"> 插入符号</label>
+          </div>
+        </div>
+        <div class="card">
+          <h2 class="card-title">结果</h2>
+          <div class="result-row">
+            <input id="ppResultField" type="text" class="result" readonly aria-label="生成的通行短语" placeholder="点击生成">
+            <button id="ppCopyBtn" class="btn" aria-label="复制">复制</button>
+          </div>
+          <div class="actions">
+            <button id="ppGenerateBtn" class="btn btn-primary">生成</button>
+            <button id="ppRegenBtn" class="btn">再来一个</button>
+          </div>
+          <div class="strength">
+            <div class="strength-bar" aria-hidden="true">
+              <div id="ppStrengthFill" class="strength-fill"></div>
+            </div>
+            <div id="ppStrengthText" class="strength-text" aria-live="polite">强度：–</div>
+          </div>
+          <div id="ppHintText" class="hint" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="about">
+      <h2>关于</h2>
+      <p>本工具在本地浏览器中使用 Web Crypto 生成随机数，不会上传你的密码或参数。</p>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <small>© 2025 Safe Pass · 本地生成 · 开源可审计</small>
+  </footer>
+
+  <script src="./app.js" defer></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('./sw.js');
+      });
+    }
+  </script>
+</body>
+</html>
